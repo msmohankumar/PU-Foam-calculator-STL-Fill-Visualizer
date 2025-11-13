@@ -7,6 +7,9 @@ import mimetypes
 import hashlib
 import tempfile
 
+# CRITICAL FIX for Streamlit Cloud: Set environment variable to force software rendering BEFORE pyvista is imported
+os.environ['PYVISTA_OFF_SCREEN'] = 'True'
+
 from PIL import Image
 import streamlit as st
 from dotenv import load_dotenv
@@ -87,7 +90,7 @@ def render_scene(mesh, frac, axis, foam_color, mold_color, mold_opacity, auto_ro
     else: # X
         origin, normal = (xmin + t * (xmax - xmin), 0, 0), (1, 0, 0)
     foam_part = mesh.clip(normal=normal, origin=origin, invert=True)
-    plotter = pv.Plotter(window_size=[900, 600])
+    plotter = pv.Plotter(window_size=[900, 600], off_screen=True)
     plotter.background_color = "white"
     plotter.add_mesh(mesh, color=mold_color, opacity=mold_opacity, lighting=True, smooth_shading=True)
     if not _is_empty(foam_part):
@@ -96,7 +99,7 @@ def render_scene(mesh, frac, axis, foam_color, mold_color, mold_opacity, auto_ro
     if auto_rotate:
         try: plotter.camera.azimuth(10)
         except Exception: pass
-    stpyvista(plotter, key="pv_single") # Use a single, stable key
+    stpyvista(plotter, key="pv_single")
 
 def render_sop_with_inlined_assets(sop_html_path: Path) -> str:
     """Loads an SOP HTML file and embeds its local assets as data URIs."""
@@ -197,7 +200,6 @@ with tab_planner:
             width_mm = st.number_input("Width (mm)", min_value=0.0, value=100.0, step=10.0)
             thickness_mm = st.number_input("Thickness (mm)", min_value=0.0, value=10.0, step=1.0)
             st.markdown("---")
-            # This widget has a unique key and its default value is set by the sidebar's input
             direct_volume_cm3 = st.number_input("Or Enter Volume Directly (cm³)", min_value=0.0, value=V_mold_ml, step=10.0, key="planner_direct_volume")
         with col2:
             st.subheader("Process Parameters")
@@ -205,7 +207,6 @@ with tab_planner:
             target_fill_time_s = st.number_input("Target Fill Time (s)", 1.0, 300.0, 10.0, 1.0)
         submitted = st.form_submit_button("Generate Production Plan")
     if submitted:
-        # Smartly decide which volume to use
         if direct_volume_cm3 > 0 and direct_volume_cm3 != V_mold_ml:
             comp_vol_cm3 = direct_volume_cm3
             volume_source_text = f"from directly entered volume of {comp_vol_cm3:.1f} cm³"
@@ -398,7 +399,7 @@ with tab_ai:
                     st.session_state.last_explanation = "Error: The `groq` library is not installed."
                 except Exception as e:
                     st.session_state.last_explanation = f"An error occurred with the Groq API: {e}"
-        with st.container(height=800):
+        with st.container():
             st.markdown(st.session_state.last_explanation)
         if st.button("Force Refresh Explanation"):
             st.session_state.last_ai_inputs = {}
