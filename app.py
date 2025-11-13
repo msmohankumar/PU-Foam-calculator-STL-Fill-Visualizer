@@ -197,7 +197,6 @@ with tab_planner:
             width_mm = st.number_input("Width (mm)", min_value=0.0, value=100.0, step=10.0)
             thickness_mm = st.number_input("Thickness (mm)", min_value=0.0, value=10.0, step=1.0)
             st.markdown("---")
-            # This widget has a unique key and its default value is set by the sidebar's input
             direct_volume_cm3 = st.number_input("Or Enter Volume Directly (cm³)", min_value=0.0, value=V_mold_ml, step=10.0, key="planner_direct_volume")
         with col2:
             st.subheader("Process Parameters")
@@ -205,7 +204,6 @@ with tab_planner:
             target_fill_time_s = st.number_input("Target Fill Time (s)", 1.0, 300.0, 10.0, 1.0)
         submitted = st.form_submit_button("Generate Production Plan")
     if submitted:
-        # Smartly decide which volume to use
         if direct_volume_cm3 > 0 and direct_volume_cm3 != V_mold_ml:
             comp_vol_cm3 = direct_volume_cm3
             volume_source_text = f"from directly entered volume of {comp_vol_cm3:.1f} cm³"
