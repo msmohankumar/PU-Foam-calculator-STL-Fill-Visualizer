@@ -1,7 +1,7 @@
 streamlit>=1.27.0
-pyvista==0.43.1
-stpyvista==0.0.9
-python-dotenv==1.0.0
-beautifulsoup4==4.12.2
+pyvista
+stpyvista
+python-dotenv
+beautifulsoup4
 groq>=0.5.0
 Pillow
