@@ -7,6 +7,9 @@ import mimetypes
 import hashlib
 import tempfile
 
+# CRITICAL FIX for Streamlit Cloud: Set environment variable to force software rendering BEFORE pyvista is imported
+os.environ['PYVISTA_OFF_SCREEN'] = 'True'
+
 from PIL import Image
 import streamlit as st
 from dotenv import load_dotenv
@@ -15,10 +18,6 @@ from bs4 import BeautifulSoup
 # 3D Visualization
 import pyvista as pv
 from stpyvista import stpyvista
-
-# CRITICAL FIX for Streamlit Cloud: Force PyVista to use a headless-compatible theme
-import pyvista
-pyvista.set_plot_theme('document')
 
 # Load environment variables from a .env file for local development
 load_dotenv()
@@ -91,7 +90,7 @@ def render_scene(mesh, frac, axis, foam_color, mold_color, mold_opacity, auto_ro
     else: # X
         origin, normal = (xmin + t * (xmax - xmin), 0, 0), (1, 0, 0)
     foam_part = mesh.clip(normal=normal, origin=origin, invert=True)
-    plotter = pv.Plotter(window_size=[900, 600])
+    plotter = pv.Plotter(window_size=[900, 600], off_screen=True) # Ensure off_screen for server compatibility
     plotter.background_color = "white"
     plotter.add_mesh(mesh, color=mold_color, opacity=mold_opacity, lighting=True, smooth_shading=True)
     if not _is_empty(foam_part):
