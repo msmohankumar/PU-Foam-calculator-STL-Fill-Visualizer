@@ -90,7 +90,7 @@ def render_scene(mesh, frac, axis, foam_color, mold_color, mold_opacity, auto_ro
     else: # X
         origin, normal = (xmin + t * (xmax - xmin), 0, 0), (1, 0, 0)
     foam_part = mesh.clip(normal=normal, origin=origin, invert=True)
-    plotter = pv.Plotter(window_size=[900, 600], off_screen=True) # Ensure off_screen for server compatibility
+    plotter = pv.Plotter(window_size=[900, 600], off_screen=True)
     plotter.background_color = "white"
     plotter.add_mesh(mesh, color=mold_color, opacity=mold_opacity, lighting=True, smooth_shading=True)
     if not _is_empty(foam_part):
@@ -99,7 +99,7 @@ def render_scene(mesh, frac, axis, foam_color, mold_color, mold_opacity, auto_ro
     if auto_rotate:
         try: plotter.camera.azimuth(10)
         except Exception: pass
-    stpyvista(plotter, key="pv_single") # Use a single, stable key
+    stpyvista(plotter, key="pv_single")
 
 def render_sop_with_inlined_assets(sop_html_path: Path) -> str:
     """Loads an SOP HTML file and embeds its local assets as data URIs."""
@@ -130,9 +130,6 @@ def render_sop_with_inlined_assets(sop_html_path: Path) -> str:
             st.error(f"Failed to read or encode image {img_path}: {e}")
     return str(soup)
 
-# ------------------------------------------------------------------
-# SIDEBAR - General Purpose Foam Calculator
-# ------------------------------------------------------------------
 with st.sidebar:
     st.header("General Foam Calculator")
     st.caption("Based on mold volume and expansion.")
@@ -148,9 +145,6 @@ with st.sidebar:
     st.write("Part A Mass (g):", format_number(calc_results["m_A_g"]))
     st.write("Part B Mass (g):", format_number(calc_results["m_B_g"]))
 
-# ------------------------------------------------------------------
-# MAIN TABS
-# ------------------------------------------------------------------
 tab_vis, tab_planner, tab_sop_viewer, tab_sop_calc, tab_sop_qc, tab_ai = st.tabs([
     "3D STL + Fill", "AI Component Planner", "SOP Viewer", "SOP Batch Calculator", "SOP + QC", "AI Explainer"
 ])
