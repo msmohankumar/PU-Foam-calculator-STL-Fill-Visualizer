@@ -6,6 +6,12 @@ import base64
 import mimetypes
 import hashlib
 import tempfile
+import os
+# CRITICAL FIX for Streamlit Cloud
+os.environ['PYVISTA_OFF_SCREEN'] = 'True'
+
+import streamlit as st
+import pyvista as pv
 
 # CRITICAL FIX for Streamlit Cloud: Set environment variable to force software rendering BEFORE pyvista is imported
 os.environ['PYVISTA_OFF_SCREEN'] = 'True'
@@ -404,3 +410,4 @@ with tab_ai:
         if st.button("Force Refresh Explanation"):
             st.session_state.last_ai_inputs = {}
             st.rerun()
+
