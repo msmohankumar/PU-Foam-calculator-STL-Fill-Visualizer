@@ -5,3 +5,4 @@ python-dotenv
 beautifulsoup4
 groq>=0.5.0
 Pillow
+fpdf2
