@@ -16,6 +16,10 @@ from bs4 import BeautifulSoup
 import pyvista as pv
 from stpyvista import stpyvista
 
+# CRITICAL FIX for Streamlit Cloud: Force PyVista to use a headless-compatible theme
+import pyvista
+pyvista.set_plot_theme('document')
+
 # Load environment variables from a .env file for local development
 load_dotenv()
 
